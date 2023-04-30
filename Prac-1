@@ -1,7 +1,42 @@
 #include <iostream>
 #include <Windows.h>
-#include <string.h>
+#include <string>
 using namespace std;
+
+struct MyDate 
+{
+	unsigned short day;
+	unsigned short month;
+	unsigned short year;
+};
+
+struct Record
+{
+	char Name[12];
+	char Type[2];
+	float Price;
+	unsigned short MinAmnt;
+	struct MyDate date;
+};
+
+void printDate(unsigned short day, unsigned short month, unsigned short year, int width) 
+{
+	int w = 10;
+	int space = (width - w) / 2 - 1;
+	cout << left;
+	cout.width(space); cout << " ";
+	if (day > 9) cout << day; else cout << "0" << day;
+	cout << ".";
+	if (month > 9) cout << month; else cout << "0" << month;
+	cout << ".";
+	cout << year;
+	cout.width(space); cout << " ";
+}
+
+void printDate(struct MyDate date, int width)
+{
+	printDate(date.day, date.month, date.year, width);
+}
 
 void lines()
 {
@@ -10,7 +45,6 @@ void lines()
 	cout << "-" << endl;
 	cout.fill(' ');
 }
-
 void columns(int x)
 {
 	cout.fill(' ');
@@ -18,106 +52,44 @@ void columns(int x)
 	cout << " ";
 	cout << "|";
 }
-
-void base()
+void Draw(struct Record* records, int Rows)
 {
 	lines();
-	cout << "|Прайс - лист";
-	columns(77);
-	cout << endl;
-	lines();
-	cout << "|Наименование товара";
-	columns(1);
-	cout << "Тип товара";
-	columns(1);
-	cout << "Цена за 1 шт (грн)";
-	columns(1);
-	cout << "Минимальное количество";
-	columns(1);
+	cout << "|Прайс - лист"; columns(77); cout << endl; lines();
+	cout << "|Наименование товара"; columns(1);
+	cout << "Тип товара"; columns(1);
+	cout << "Цена за 1 шт (грн)"; columns(1);
+	cout << "Минимальное количество"; columns(1);
 	cout << "Дата";
-	columns(8);
-	cout << endl;
+	columns(8); cout << endl; lines();
+	for (int i = 0; i < Rows; i++) {
+		cout << left << "|"; cout.width(20); cout << left << records[i].Name;
+		cout << left << "|"; cout.width(11); cout << left << records[i].Type;
+		cout << left << "|"; cout.width(19); cout << left << records[i].Price;
+		cout << left << "|"; cout.width(23); cout << left << records[i].MinAmnt;
+		cout << left << "|"; printDate(records[i].date, 12);
+		cout << "|" << endl;
+	}
+	lines();
+	cout << left << "|Примечание: К – канцтовары, О – оргтехника";	cout.fill(' '); cout.width(47); cout << " "; cout << "|" << endl;
 	lines();
 }
 
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 
-
-
-
-
-	
-	char Name[3];
-	char Type[3];
-	float Price[3];
-	short MinAmnt[3];
-	
-	struct MyDate
+	struct Record Table[10]
 	{
-	unsigned short day;
-	unsigned short month;
-	unsigned short year;
+	Table[0] = { "Папка", "К", 4.75, 4, {03,07,2022} },
+	Table[1] = { "Бумага", "К", 13.90, 10, {03,04,2021} },
+	Table[2] = { "Калькулятор", "О", 411.00, 1, {04,03,2022} }
 	};
-
-	struct Record
-	{
-		char Name[3];
-		char Type[3];
-		float Price[3];
-		short MinAmnt[3];
-		struct Mydate ;
-	};
-	
-	
-	int main()
-	{
-		SetConsoleCP(1251);
-		SetConsoleOutputCP(1251);
-
-
-	char x[3][5][15]; 
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 5; j++)
-		{
-			cin >> x[i][j];
-		}
-	}
-	base();
-
-	for (int i = 0; i < 3; i++) 
-	{
-		cout << "|";
-		for (int j = 0; j < 5; j++)
-		{
-			cout << x[i][j];
-			switch (j)
-			{
-			case 0:
-				columns(20 - strlen(x[i][j]));
-				break;
-			case 1:
-				columns(11 - strlen(x[i][j]));
-				break;
-			case 2:
-				columns(19 - strlen(x[i][j]));
-				break;
-			case 3:
-				columns(23 - strlen(x[i][j]));
-				break;
-			case 4:
-				columns(12 - strlen(x[i][j]));
-				break;
-			}
-		}
-		cout << endl;
-		lines();
-	}
-	cout << "|Примечание: К – канцтовары, О – оргтехника";
-	columns(47);
+	Draw(Table, 3);
 	cout << endl;
-	lines();
+	cout << endl;
+	cout << endl;
+	Draw(Table, 10);
+	return 0;
 }
-
-// Папка К 4.75 4 03.07.2022 Бумага К 13.90 10 03.04.2021 Калькулятор О 411.00 1 04.03.2022
-
-//Поменять местами записи (элементы массива структур), содержащие минимальную и максимальную даты
